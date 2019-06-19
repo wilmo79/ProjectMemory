@@ -9,7 +9,7 @@
 <meta name="generator" content="pandoc" />
 
 
-<meta name="author" content="zossimov" />
+<meta name="author" content="will" />
 
 
 <title>Packages to Remember</title>
@@ -375,8 +375,8 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Packages to Remember</h1>
-<h4 class="author">zossimov</h4>
-<h4 class="date">6/15/2019</h4>
+<h4 class="author">will</h4>
+<h4 class="date">6/19/2019</h4>
 
 </div>
 
@@ -384,32 +384,116 @@ $(document).ready(function () {
 <div id="packages-to-remember-early-draft" class="section level1">
 <h1>Packages to Remember <strong>EARLY DRAFT</strong></h1>
 <p>What packages to I want to remember? Examples from each.</p>
-<p>In general, I’m seeking to stay in the tidyverse for effieciency; venturing out when there are compelling reasons to do so.</p>
+<p>In general, I’m seeking to stay in the tidyverse for efficiency; venturing out when there are compelling reasons to do so.</p>
 <div id="ingest" class="section level2">
 <h2>Ingest</h2>
-<p><tbd></p>
+<p>Getting the data in from other sources.</p>
+<pre class="r"><code>library(readr)
+library(readxl)
+library(jsonlite) # when I have to work with JSON files
+library(haven) </code></pre>
+<div id="readr" class="section level4">
+<h4>readr</h4>
+<p>This is the workhorse package; reading (parsing) from flat files (csv, tab-delim, etc) to tibbles.</p>
+<p>Can read directly from URLs</p>
+<pre class="r"><code>sales &lt;- read_csv(&quot;http://samplecsvs.s3.amazonaws.com/SalesJan2009.csv&quot;)</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   Transaction_date = col_character(),
+##   Product = col_character(),
+##   Price = col_number(),
+##   Payment_Type = col_character(),
+##   Name = col_character(),
+##   City = col_character(),
+##   State = col_character(),
+##   Country = col_character(),
+##   Account_Created = col_character(),
+##   Last_Login = col_character(),
+##   Latitude = col_double(),
+##   Longitude = col_double()
+## )</code></pre>
+</div>
+<div id="jsonlite" class="section level4">
+<h4>jsonlite</h4>
+<p>From Getting Started:</p>
+<blockquote>
+<p>The jsonlite package is a JSON parser/generator optimized for the web. Its main strength is that it implements a bidirectional mapping between JSON data and the most important R data types. Thereby we can convert between R objects and JSON without loss of type or information, and without the need for any manual data munging. This is ideal for interacting with web APIs, or to build pipelines where data structures seamlessly flow in and out of R using JSON.</p>
+</blockquote>
+</div>
 </div>
 <div id="processtransform" class="section level2">
 <h2>Process/Transform</h2>
+<p>This the core data work. Sometimes transformed data is the goal of the exercise; sometimes the subsequent anaysis is.</p>
+<div id="dplyr" class="section level4">
+<h4>dplyr</h4>
 <pre class="r"><code>library(dplyr) </code></pre>
 <pre><code>## 
-## Attaching package: 'dplyr'</code></pre>
-<pre><code>## The following objects are masked from 'package:stats':
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
 ## 
 ##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from 'package:base':
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
 ## 
 ##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>glimpse(sales) # Take a look at the sales data</code></pre>
+<pre><code>## Observations: 998
+## Variables: 12
+## $ Transaction_date &lt;chr&gt; &quot;1/2/09 6:17&quot;, &quot;1/2/09 4:53&quot;, &quot;1/2/09 13:08&quot;,...
+## $ Product          &lt;chr&gt; &quot;Product1&quot;, &quot;Product1&quot;, &quot;Product1&quot;, &quot;Product1...
+## $ Price            &lt;dbl&gt; 1200, 1200, 1200, 1200, 3600, 1200, 1200, 120...
+## $ Payment_Type     &lt;chr&gt; &quot;Mastercard&quot;, &quot;Visa&quot;, &quot;Mastercard&quot;, &quot;Visa&quot;, &quot;...
+## $ Name             &lt;chr&gt; &quot;carolina&quot;, &quot;Betina&quot;, &quot;Federica e Andrea&quot;, &quot;G...
+## $ City             &lt;chr&gt; &quot;Basildon&quot;, &quot;Parkville&quot;, &quot;Astoria&quot;, &quot;Echuca&quot;,...
+## $ State            &lt;chr&gt; &quot;England&quot;, &quot;MO&quot;, &quot;OR&quot;, &quot;Victoria&quot;, &quot;AL&quot;, &quot;NJ&quot;...
+## $ Country          &lt;chr&gt; &quot;United Kingdom&quot;, &quot;United States&quot;, &quot;United St...
+## $ Account_Created  &lt;chr&gt; &quot;1/2/09 6:00&quot;, &quot;1/2/09 4:42&quot;, &quot;1/1/09 16:21&quot;,...
+## $ Last_Login       &lt;chr&gt; &quot;1/2/09 6:08&quot;, &quot;1/2/09 7:49&quot;, &quot;1/3/09 12:32&quot;,...
+## $ Latitude         &lt;dbl&gt; 51.50000, 39.19500, 46.18806, -36.13333, 33.5...
+## $ Longitude        &lt;dbl&gt; -1.116667, -94.681940, -123.830000, 144.75000...</code></pre>
 <pre class="r"><code>library(broom)
-library(purrr)
-library(stringr)</code></pre>
+library(purrr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;purrr&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:jsonlite&#39;:
+## 
+##     flatten</code></pre>
+<pre class="r"><code>library(stringr)</code></pre>
+</div>
 </div>
 <div id="visualization" class="section level2">
 <h2>Visualization</h2>
+<pre class="r"><code>library(ggplot2)
+library(plotly)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;plotly&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     last_plot</code></pre>
+<pre><code>## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter</code></pre>
+<pre><code>## The following object is masked from &#39;package:graphics&#39;:
+## 
+##     layout</code></pre>
+<pre class="r"><code>library(DT)</code></pre>
 <div id="dimensional-data" class="section level3">
 <h3>Dimensional Data</h3>
 <p>The ridgeline library makes adding ordered data easy.</p>
 </div>
+</div>
+<div id="presentions" class="section level2">
+<h2>Presentions</h2>
+<p><em>Markdown </em>Word <em>PowerPoint </em>Shiny</p>
+<pre class="r"><code>library(shiny)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;shiny&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:DT&#39;:
+## 
+##     dataTableOutput, renderDataTable</code></pre>
+<pre><code>## The following object is masked from &#39;package:jsonlite&#39;:
+## 
+##     validate</code></pre>
+<pre class="r"><code>library(shinythemes)</code></pre>
 </div>
 <div id="storing-data" class="section level2">
 <h2>Storing data</h2>

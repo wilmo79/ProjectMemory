@@ -12,22 +12,65 @@ knitr::opts_chunk$set(echo = TRUE)
 # Packages to Remember **EARLY DRAFT**
 What packages to I want to remember? Examples from each.
 
-In general, I'm seeking to stay in the tidyverse for effieciency; venturing out when there are compelling reasons to do so.
+In general, I'm seeking to stay in the tidyverse for efficiency; venturing out when there are compelling reasons to do so.
 
 ## Ingest
-<tbd>
+Getting the data in from other sources.
+
+### Files
+
 ```{r}
 library(readr)
 library(readxl)
-library(haven)
+library(jsonlite) # when I have to work with JSON files
+library(haven) # not really used; but like knowing it exists if needed
 ```
+#### readr
+This is a workhorse package; reading (parsing) from flat files (csv, tab-delim, etc) to tibbles.
+
+Can read directly from URLs. Let's read some sample sales data. 
+```{r message=FALSE}
+sales <- read_csv("http://samplecsvs.s3.amazonaws.com/SalesJan2009.csv")
+```
+
+#### jsonlite
+From Getting Started:
+
+> The jsonlite package is a JSON parser/generator optimized for the web. Its main strength is that it implements a bidirectional mapping between JSON data and the most important R data types. Thereby we can convert between R objects and JSON without loss of type or information, and without the need for any manual data munging. This is ideal for interacting with web APIs, or to build pipelines where data structures seamlessly flow in and out of R using JSON.
+
+### Databases
+Sometimes I'm in the happy (for me) position of being able to read direct from database. Then some more libraries are needed.
+```{r}
+library(odbc)
+
+```
+## Reference Data/Libraries
+countrycode
+
 ## Process/Transform
+This the core data work. Sometimes transformed data is the goal of the exercise; sometimes the subsequent anaysis is. 
+
+#### dplyr
 ```{r}
 library(dplyr) 
+glimpse(sales) # Take a look at the sales data
+```
+
+```{r}
 library(broom)
 library(purrr)
 library(stringr)
+
+
 ```
+
+## Analysis
+ * Core tools
+ * Forecasting
+ forecast
+ modelr
+ CausalImpact
+ mclust
 
 ## Visualization
 ```{r}
