@@ -388,30 +388,17 @@ $(document).ready(function () {
 <div id="ingest" class="section level2">
 <h2>Ingest</h2>
 <p>Getting the data in from other sources.</p>
+<div id="files" class="section level3">
+<h3>Files</h3>
 <pre class="r"><code>library(readr)
 library(readxl)
 library(jsonlite) # when I have to work with JSON files
-library(haven) </code></pre>
+library(haven) # not really used; but like knowing it exists if needed</code></pre>
 <div id="readr" class="section level4">
 <h4>readr</h4>
-<p>This is the workhorse package; reading (parsing) from flat files (csv, tab-delim, etc) to tibbles.</p>
-<p>Can read directly from URLs</p>
+<p>This is a workhorse package; reading (parsing) from flat files (csv, tab-delim, etc) to tibbles.</p>
+<p>Can read directly from URLs. Let’s read some sample sales data.</p>
 <pre class="r"><code>sales &lt;- read_csv(&quot;http://samplecsvs.s3.amazonaws.com/SalesJan2009.csv&quot;)</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   Transaction_date = col_character(),
-##   Product = col_character(),
-##   Price = col_number(),
-##   Payment_Type = col_character(),
-##   Name = col_character(),
-##   City = col_character(),
-##   State = col_character(),
-##   Country = col_character(),
-##   Account_Created = col_character(),
-##   Last_Login = col_character(),
-##   Latitude = col_double(),
-##   Longitude = col_double()
-## )</code></pre>
 </div>
 <div id="jsonlite" class="section level4">
 <h4>jsonlite</h4>
@@ -420,6 +407,64 @@ library(haven) </code></pre>
 <p>The jsonlite package is a JSON parser/generator optimized for the web. Its main strength is that it implements a bidirectional mapping between JSON data and the most important R data types. Thereby we can convert between R objects and JSON without loss of type or information, and without the need for any manual data munging. This is ideal for interacting with web APIs, or to build pipelines where data structures seamlessly flow in and out of R using JSON.</p>
 </blockquote>
 </div>
+</div>
+<div id="databases" class="section level3">
+<h3>Databases</h3>
+<p>Sometimes I’m in the happy (for me) position of being able to read direct from database. Then some more libraries are needed.</p>
+<pre class="r"><code>library(DBI) # foundational for both odbc and RSQLite
+library(odbc)
+library(RSQLite)
+
+sales_db &lt;- dbConnect(SQLite(),&quot;salesDB.sqlite&quot;)
+dbWriteTable(sales_db,&quot;Sales&quot;, as.data.frame(sales))
+dbListTables(sales_db)</code></pre>
+<pre><code>## [1] &quot;Sales&quot;</code></pre>
+<pre class="r"><code>dbGetQuery(sales_db,&#39;SELECT * FROM Sales LIMIT 10&#39;)</code></pre>
+<pre><code>##    Transaction_date  Product Price Payment_Type              Name
+## 1       1/2/09 6:17 Product1  1200   Mastercard          carolina
+## 2       1/2/09 4:53 Product1  1200         Visa            Betina
+## 3      1/2/09 13:08 Product1  1200   Mastercard Federica e Andrea
+## 4      1/3/09 14:44 Product1  1200         Visa             Gouya
+## 5      1/4/09 12:56 Product2  3600         Visa            Gerd W
+## 6      1/4/09 13:19 Product1  1200         Visa          LAURENCE
+## 7      1/4/09 20:11 Product1  1200   Mastercard             Fleur
+## 8      1/2/09 20:09 Product1  1200   Mastercard              adam
+## 9      1/4/09 13:17 Product1  1200   Mastercard   Renee Elisabeth
+## 10     1/4/09 14:11 Product1  1200         Visa             Aidan
+##              City         State        Country Account_Created
+## 1        Basildon       England United Kingdom     1/2/09 6:00
+## 2       Parkville            MO  United States     1/2/09 4:42
+## 3         Astoria            OR  United States    1/1/09 16:21
+## 4          Echuca      Victoria      Australia   9/25/05 21:13
+## 5  Cahaba Heights            AL  United States  11/15/08 15:47
+## 6       Mickleton            NJ  United States   9/24/08 15:19
+## 7          Peoria            IL  United States     1/3/09 9:38
+## 8          Martin            TN  United States    1/2/09 17:43
+## 9        Tel Aviv      Tel Aviv         Israel    1/4/09 13:03
+## 10         Chatou Ile-de-France         France     6/3/08 4:22
+##      Last_Login  Latitude   Longitude
+## 1   1/2/09 6:08  51.50000   -1.116667
+## 2   1/2/09 7:49  39.19500  -94.681940
+## 3  1/3/09 12:32  46.18806 -123.830000
+## 4  1/3/09 14:22 -36.13333  144.750000
+## 5  1/4/09 12:45  33.52056  -86.802500
+## 6  1/4/09 13:04  39.79000  -75.238060
+## 7  1/4/09 19:45  40.69361  -89.588890
+## 8  1/4/09 20:01  36.34333  -88.850280
+## 9  1/4/09 22:10  32.06667   34.766667
+## 10  1/5/09 1:17  48.88333    2.150000</code></pre>
+<pre class="r"><code>#clean-up
+dbDisconnect(sales_db)
+unlink(&quot;salesDB.sqlite&quot;)</code></pre>
+<p>The Azure libraries are pretty great to have handy when connecting to Azure-land</p>
+<pre class="r"><code>library(AzureAuth)
+library(AzureRMR)
+library(AzureStor)</code></pre>
+</div>
+</div>
+<div id="reference-datalibraries" class="section level2">
+<h2>Reference Data/Libraries</h2>
+<pre class="r"><code>library(countrycode)</code></pre>
 </div>
 <div id="processtransform" class="section level2">
 <h2>Process/Transform</h2>
@@ -435,7 +480,14 @@ library(haven) </code></pre>
 <pre><code>## The following objects are masked from &#39;package:base&#39;:
 ## 
 ##     intersect, setdiff, setequal, union</code></pre>
-<pre class="r"><code>glimpse(sales) # Take a look at the sales data</code></pre>
+<pre class="r"><code>library(lubridate)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;lubridate&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:base&#39;:
+## 
+##     date</code></pre>
+<pre class="r"><code>library(tidyr)
+glimpse(sales) # Use dplyr to take a look at the sales data</code></pre>
 <pre><code>## Observations: 998
 ## Variables: 12
 ## $ Transaction_date &lt;chr&gt; &quot;1/2/09 6:17&quot;, &quot;1/2/09 4:53&quot;, &quot;1/2/09 13:08&quot;,...
@@ -450,15 +502,47 @@ library(haven) </code></pre>
 ## $ Last_Login       &lt;chr&gt; &quot;1/2/09 6:08&quot;, &quot;1/2/09 7:49&quot;, &quot;1/3/09 12:32&quot;,...
 ## $ Latitude         &lt;dbl&gt; 51.50000, 39.19500, 46.18806, -36.13333, 33.5...
 ## $ Longitude        &lt;dbl&gt; -1.116667, -94.681940, -123.830000, 144.75000...</code></pre>
+<pre class="r"><code>sales %&gt;% 
+        filter(Payment_Type == &quot;Mastercard&quot;) %&gt;%
+        mutate(Transaction_date = floor_date(mdy_hm(Transaction_date),unit=&quot;day&quot;)) %&gt;%
+        unite(&quot;addr&quot;,City,State,Country,sep=&quot;, &quot;) %&gt;%
+        group_by(Transaction_date, Product) %&gt;% 
+        summarize(tot_rev = sum(Price)) %&gt;%
+        arrange(Transaction_date)</code></pre>
+<pre><code>## # A tibble: 59 x 3
+## # Groups:   Transaction_date [31]
+##    Transaction_date    Product  tot_rev
+##    &lt;dttm&gt;              &lt;chr&gt;      &lt;dbl&gt;
+##  1 2009-01-01 00:00:00 Product1   13200
+##  2 2009-01-01 00:00:00 Product2    7200
+##  3 2009-01-02 00:00:00 Product1   14400
+##  4 2009-01-03 00:00:00 Product1    8400
+##  5 2009-01-04 00:00:00 Product1   16800
+##  6 2009-01-04 00:00:00 Product2    3600
+##  7 2009-01-05 00:00:00 Product1   10800
+##  8 2009-01-05 00:00:00 Product2    3600
+##  9 2009-01-06 00:00:00 Product1    9600
+## 10 2009-01-06 00:00:00 Product2   10800
+## # ... with 49 more rows</code></pre>
 <pre class="r"><code>library(broom)
 library(purrr)</code></pre>
 <pre><code>## 
 ## Attaching package: &#39;purrr&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:AzureRMR&#39;:
+## 
+##     is_empty</code></pre>
 <pre><code>## The following object is masked from &#39;package:jsonlite&#39;:
 ## 
 ##     flatten</code></pre>
 <pre class="r"><code>library(stringr)</code></pre>
 </div>
+</div>
+<div id="analysis" class="section level2">
+<h2>Analysis</h2>
+<ul>
+<li>Core tools</li>
+<li>Forecasting * forecast * modelr * CausalImpact * mclust</li>
+</ul>
 </div>
 <div id="visualization" class="section level2">
 <h2>Visualization</h2>
@@ -478,7 +562,13 @@ library(plotly)</code></pre>
 <pre class="r"><code>library(DT)</code></pre>
 <div id="dimensional-data" class="section level3">
 <h3>Dimensional Data</h3>
-<p>The ridgeline library makes adding ordered data easy.</p>
+<p>The ridgeline library ggridges makes adding ordered data easy.</p>
+<pre class="r"><code>library(ggridges)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;ggridges&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:ggplot2&#39;:
+## 
+##     scale_discrete_manual</code></pre>
 </div>
 </div>
 <div id="presentions" class="section level2">
@@ -493,7 +583,14 @@ library(plotly)</code></pre>
 <pre><code>## The following object is masked from &#39;package:jsonlite&#39;:
 ## 
 ##     validate</code></pre>
-<pre class="r"><code>library(shinythemes)</code></pre>
+<pre class="r"><code>library(shinythemes)
+library(knitr)
+library(kableExtra)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;kableExtra&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     group_rows</code></pre>
 </div>
 <div id="storing-data" class="section level2">
 <h2>Storing data</h2>

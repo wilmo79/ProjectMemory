@@ -49,6 +49,9 @@ sales_db <- dbConnect(SQLite(),"salesDB.sqlite")
 dbWriteTable(sales_db,"Sales", as.data.frame(sales))
 dbListTables(sales_db)
 dbGetQuery(sales_db,'SELECT * FROM Sales LIMIT 10')
+#clean-up
+dbDisconnect(sales_db)
+unlink("salesDB.sqlite")
 ```
 
 The Azure libraries are pretty great to have handy when connecting to Azure-land
@@ -59,7 +62,10 @@ library(AzureStor)
 ```
 
 ## Reference Data/Libraries
-countrycode
+```{r}
+library(countrycode)
+```
+
 
 ## Process/Transform
 This the core data work. Sometimes transformed data is the goal of the exercise; sometimes the subsequent anaysis is. 
@@ -88,10 +94,10 @@ library(stringr)
 ## Analysis
  * Core tools
  * Forecasting
- forecast
- modelr
- CausalImpact
- mclust
+        * forecast
+        * modelr
+        * CausalImpact
+        * mclust
 
 ## Visualization
 ```{r}
@@ -101,9 +107,9 @@ library(DT)
 ```
 
 ### Dimensional Data
-The ridgeline library `r library(ggridges)` makes adding ordered data easy. 
+The ridgeline library ggridges makes adding ordered data easy. 
 ```{r}
-
+library(ggridges)
 ```
 
 ## Presentions
@@ -114,7 +120,8 @@ The ridgeline library `r library(ggridges)` makes adding ordered data easy.
 ```{r}
 library(shiny)
 library(shinythemes)
-
+library(knitr)
+library(kableExtra)
 ```
 
 ## Storing data
