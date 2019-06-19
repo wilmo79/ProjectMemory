@@ -41,9 +41,23 @@ From Getting Started:
 ### Databases
 Sometimes I'm in the happy (for me) position of being able to read direct from database. Then some more libraries are needed.
 ```{r}
+library(DBI) # foundational for both odbc and RSQLite
 library(odbc)
+library(RSQLite)
 
+sales_db <- dbConnect(SQLite(),"salesDB.sqlite")
+dbWriteTable(sales_db,"Sales", as.data.frame(sales))
+dbListTables(sales_db)
+dbGetQuery(sales_db,'SELECT * FROM Sales LIMIT 10')
 ```
+
+The Azure libraries are pretty great to have handy when connecting to Azure-land
+```{r}
+library(AzureAuth)
+library(AzureRMR)
+library(AzureStor)
+```
+
 ## Reference Data/Libraries
 countrycode
 
@@ -53,15 +67,22 @@ This the core data work. Sometimes transformed data is the goal of the exercise;
 #### dplyr
 ```{r}
 library(dplyr) 
-glimpse(sales) # Take a look at the sales data
+library(lubridate)
+library(tidyr)
+glimpse(sales) # Use dplyr to take a look at the sales data
+sales %>% 
+        filter(Payment_Type == "Mastercard") %>%
+        mutate(Transaction_date = floor_date(mdy_hm(Transaction_date),unit="day")) %>%
+        unite("addr",City,State,Country,sep=", ") %>%
+        group_by(Transaction_date, Product) %>% 
+        summarize(tot_rev = sum(Price)) %>%
+        arrange(Transaction_date)
 ```
 
 ```{r}
 library(broom)
 library(purrr)
 library(stringr)
-
-
 ```
 
 ## Analysis
