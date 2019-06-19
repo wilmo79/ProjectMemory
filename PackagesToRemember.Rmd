@@ -1,7 +1,7 @@
 ---
 title: "Packages to Remember"
-author: "zossimov"
-date: "6/15/2019"
+author: "will"
+date: "6/19/2019"
 output: html_document
 ---
 
@@ -9,20 +9,55 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Packages to Remember
+# Packages to Remember **EARLY DRAFT**
 What packages to I want to remember? Examples from each.
 
-## Ingest
+In general, I'm seeking to stay in the tidyverse for effieciency; venturing out when there are compelling reasons to do so.
 
+## Ingest
+<tbd>
+```{r}
+library(readr)
+library(readxl)
+library(haven)
+```
 ## Process/Transform
+```{r}
+library(dplyr) 
+library(broom)
+library(purrr)
+library(stringr)
+```
 
 ## Visualization
+```{r}
+library(ggplot2)
+library(plotly)
+library(DT)
+```
 
 ### Dimensional Data
 The ridgeline library `r library(ggridges)` makes adding ordered data easy. 
 ```{r}
 
 ```
+
+## Presentions
+*Markdown
+*Word
+*PowerPoint
+*Shiny
+```{r}
+library(shiny)
+library(shinythemes)
+
+```
+
+## Storing data
+
+### Locally
+
+### Remote/Cloud
 
 # Saving work with Git
 
