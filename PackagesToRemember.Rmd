@@ -1,0 +1,36 @@
+---
+title: "Packages to Remember"
+author: "zossimov"
+date: "6/15/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Packages to Remember
+What packages to I want to remember? Examples from each.
+
+## Ingest
+
+## Process/Transform
+
+## Visualization
+
+### Dimensional Data
+The ridgeline library `r library(ggridges)` makes adding ordered data easy. 
+```{r}
+
+```
+
+# Saving work with Git
+
+## This workbook
+
+# Saving environment with Docker
+
+
+
+
+
