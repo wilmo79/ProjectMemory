@@ -98,6 +98,10 @@ library(stringr)
         * modelr
         * CausalImpact
         * mclust
+```{r}
+library(rsample) # makes sampling easy, pretty new, part of tidymodeling set
+                 # modelr has many of the same fuctions, slowly being replaced
+```
 
 ## Visualization
 ```{r}
