@@ -101,6 +101,10 @@ library(stringr)
 ```{r}
 library(rsample) # makes sampling easy, pretty new, part of tidymodeling set
                  # modelr has many of the same fuctions, slowly being replaced
+library(Metrics) # Evaluation metrics for Machine Learning
+library(ranger)  # random forests
+library(dummies) # dummy data for categorical distances
+
 ```
 
 ## Visualization
